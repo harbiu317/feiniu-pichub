@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useMetaStore } from '@/stores/meta'
-import { api } from '@/api'
+import { useStatsStore } from '@/stores/stats'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const metaStore = useMetaStore()
-
-const stats = ref<any>({})
+const statsStore = useStatsStore()
+const stats = computed(() => statsStore.data)
 
 onMounted(async () => {
   await userStore.fetchMe()
   await metaStore.load()
-  try {
-    stats.value = await api.stats()
-  } catch {}
+  await statsStore.load()
 })
+
+// 路由切换时刷新侧边栏数量角标，确保删除/新增后跨页面回来看到最新计数
+watch(() => route.fullPath, () => { statsStore.load() })
 
 const pageTitle = computed(() => (route.meta.title as string) || 'PicHub')
 

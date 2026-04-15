@@ -2,7 +2,9 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { api } from '@/api'
 import { useToastStore } from '@/stores/toast'
+import { useStatsStore } from '@/stores/stats'
 const toast = useToastStore()
+const statsStore = useStatsStore()
 
 const items = ref<any[]>([])
 const total = ref(0)
@@ -95,6 +97,7 @@ async function deleteSelected() {
     await api.batchDelete(Array.from(selected.value))
     clearSelection()
     await load()
+    statsStore.load()
   } catch (e: any) {
     toast.error(e.message || '删除失败')
   } finally {

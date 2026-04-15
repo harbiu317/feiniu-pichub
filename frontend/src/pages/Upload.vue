@@ -3,9 +3,11 @@ import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { api } from '@/api'
 import { useMetaStore } from '@/stores/meta'
 import { useToastStore } from '@/stores/toast'
+import { useStatsStore } from '@/stores/stats'
 
 const metaStore = useMetaStore()
 const toast = useToastStore()
+const statsStore = useStatsStore()
 
 type LinkFormat = 'url' | 'markdown' | 'html' | 'bbcode' | 'thumb'
 
@@ -178,6 +180,7 @@ async function processQueue() {
     try {
       stats.value = await api.stats()
     } catch {}
+    statsStore.load()
     
     // 清理错误
     setTimeout(() => {

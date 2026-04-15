@@ -2,7 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { api } from '@/api'
 import { useToastStore } from '@/stores/toast'
+import { useStatsStore } from '@/stores/stats'
 const toast = useToastStore()
+const statsStore = useStatsStore()
 
 const albums = ref<any[]>([])
 const loading = ref(false)
@@ -40,6 +42,7 @@ async function create() {
     newDesc.value = ''
     newPublic.value = false
     await load()
+    statsStore.load()
   } catch (e: any) {
     toast.error(e.message || '创建相册失败')
   } finally {
@@ -72,6 +75,7 @@ async function remove(id: number, name: string) {
   try {
     await api.deleteAlbum(id)
     await load()
+    statsStore.load()
   } catch (e: any) {
     toast.error(e.message || '删除相册失败')
   }

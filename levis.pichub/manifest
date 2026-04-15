@@ -1,5 +1,5 @@
 appname=levis.pichub
-version=1.0.14
+version=1.0.15
 desc=Self-hosted image hosting with multi-format share links, albums, API tokens
 arch=x86_64
 display_name=图床 PicHub

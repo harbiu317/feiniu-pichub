@@ -2,7 +2,11 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { api } from '@/api'
 import { useToastStore } from '@/stores/toast'
+import { useMetaStore } from '@/stores/meta'
 const toast = useToastStore()
+const metaStore = useMetaStore()
+// 最近一次从服务端加载到的配置快照，用于切换回原厂商时回显
+const savedSettings = ref<any>({})
 
 const tab = ref<'users' | 'settings' | 'storage'>('users')
 const users = ref<any[]>([])
@@ -77,6 +81,7 @@ async function loadUsers() {
 async function loadSettings() {
   try {
     settings.value = await api.admin.getSettings()
+    savedSettings.value = { ...settings.value }
   } catch (e: any) {
     toast.error(e.message || '加载设置失败')
   }
@@ -175,6 +180,8 @@ async function saveStorageSettings() {
     savedTab.value = true
     setTimeout(() => (savedTab.value = false), 2000)
     await loadSettings()
+    // 刷新全局 meta，使上传页等位置立即展示新的存储类型
+    await metaStore.load()
   } catch (e: any) {
     toast.error(e.message || '保存失败')
   } finally {
@@ -210,8 +217,22 @@ async function testStorage() {
 
 function setProvider(p: Provider) {
   if (settings.value.storage_driver === p) return
-  // 切换到不同服务商时清空所有凭证字段，避免把七牛的 key 错发到阿里云
   settings.value.storage_driver = p
+  testResult.value = null
+  // 若切回服务端已保存的服务商，则回显原配置（而不是清空）
+  if (savedSettings.value.storage_driver === p) {
+    settings.value.storage_s3_endpoint = savedSettings.value.storage_s3_endpoint || ''
+    settings.value.storage_s3_region = savedSettings.value.storage_s3_region || ''
+    settings.value.storage_s3_bucket = savedSettings.value.storage_s3_bucket || ''
+    settings.value.storage_s3_access = savedSettings.value.storage_s3_access || ''
+    settings.value.storage_s3_secret = savedSettings.value.storage_s3_secret || ''
+    settings.value.storage_s3_public = savedSettings.value.storage_s3_public || ''
+    settings.value.storage_s3_prefix = savedSettings.value.storage_s3_prefix || ''
+    settings.value.storage_s3_ssl = savedSettings.value.storage_s3_ssl
+    settings.value.storage_s3_path = savedSettings.value.storage_s3_path
+    return
+  }
+  // 切换到不同服务商时清空凭证字段，避免把七牛的 key 错发到阿里云
   const info = providerInfo[p]
   settings.value.storage_s3_endpoint = info.endpointHint
   settings.value.storage_s3_region = info.regionHint
@@ -222,7 +243,6 @@ function setProvider(p: Provider) {
   settings.value.storage_s3_prefix = ''
   settings.value.storage_s3_ssl = true
   settings.value.storage_s3_path = false
-  testResult.value = null
 }
 
 function fmtSize(b: number) {
