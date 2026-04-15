@@ -1,0 +1,64 @@
+/* Vercel 风格 Design Tokens */
+:root {
+  /* 背景层级（浅色） */
+  --bg: #FFFFFF;
+  --bg-2: #FAFAFA;
+  --bg-3: #F4F4F5;
+  --bg-4: #EEEEEE;
+
+  /* 边框 */
+  --border: #EAEAEA;
+  --border-2: #D4D4D4;
+  --border-3: #A1A1AA;
+
+  /* 文字 */
+  --fg: #000000;
+  --fg-2: #333333;
+  --fg-3: #666666;
+  --fg-4: #999999;
+
+  /* 品牌色 — Vercel 是全黑主色 */
+  --accent: #000000;
+  --accent-hover: #222222;
+  --accent-soft: rgba(0, 0, 0, 0.04);
+  --accent-border: rgba(0, 0, 0, 0.12);
+
+  /* 状态色 */
+  --success: #0070F3;  /* Vercel 蓝 */
+  --warning: #F5A623;
+  --danger: #EE0000;
+  --info: #0070F3;
+
+  /* 字体 */
+  --font-sans: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "Geist Mono", "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* 尺寸 — Vercel 偏锐利 */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+
+  /* 间距 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* 阴影（Vercel 几乎不用） */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* 动画 */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur: 160ms;
+  --dur-slow: 220ms;
+}

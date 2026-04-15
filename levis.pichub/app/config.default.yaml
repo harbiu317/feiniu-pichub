@@ -1,0 +1,24 @@
+# 开发环境配置
+server:
+  addr: "0.0.0.0:7800"
+  public_url: "http://localhost:5173"
+  allow_anonymous: true
+database:
+  path: "backend/data/pichub.db"
+storage:
+  driver: "local"
+  local:
+    root: "backend/data/uploads"
+auth:
+  admin_user: "admin"
+  admin_password: "admin123"
+image:
+  max_size_mb: 20
+  auto_compress: true
+  quality: 85
+  strip_exif: true
+  thumbnail:
+    small: 200
+    medium: 600
+limits:
+  upload_per_minute: 60

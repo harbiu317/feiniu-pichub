@@ -1,0 +1,21 @@
+#!/bin/bash
+# 卸载回调：根据向导选择是否彻底删除用户数据（PKGVAR 与 PKGETC）
+set -e
+
+LOG_FILE="${TRIM_PKGVAR}/info.log"
+log_msg() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "${LOG_FILE}" 2>/dev/null || true
+}
+
+if [ "${wizard_uninstall_keep_data}" = "delete" ]; then
+    log_msg "用户选择彻底删除数据"
+    # 清除上传目录、SQLite 数据库、配置文件
+    rm -rf "${TRIM_PKGVAR}/uploads" 2>/dev/null || true
+    rm -f "${TRIM_PKGVAR}/pichub.db" "${TRIM_PKGVAR}/pichub.db-shm" "${TRIM_PKGVAR}/pichub.db-wal" 2>/dev/null || true
+    rm -f "${TRIM_PKGVAR}/app.pid" "${TRIM_PKGVAR}/info.log" 2>/dev/null || true
+    rm -f "${TRIM_PKGETC}/config.yaml" "${TRIM_PKGETC}/pichub.env" 2>/dev/null || true
+else
+    log_msg "保留用户数据，仅移除应用程序"
+fi
+
+exit 0

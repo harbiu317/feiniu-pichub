@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>图床 · Vercel 风格</title>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --bg-2: #FAFAFA;
+    --bg-3: #F4F4F5;
+    --border: #EAEAEA;
+    --border-2: #D4D4D4;
+    --fg: #000000;
+    --fg-2: #333333;
+    --fg-3: #666666;
+    --fg-4: #999999;
+    --accent: #000000;
+    --success: #0070F3;
+    --danger: #EE0000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+  .mono { font-family: "Geist Mono", "SF Mono", Menlo, Consolas, monospace; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  header.nav {
+    border-bottom: 1px solid var(--border);
+    height: 64px;
+    display: flex; align-items: center;
+    padding: 0 32px;
+    gap: 24px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; }
+  .logo-mark {
+    width: 24px; height: 24px;
+    background: #000;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .nav-links { display: flex; gap: 24px; margin-left: 24px; }
+  .nav-links a { font-size: 14px; color: var(--fg-3); }
+  .nav-links a.active { color: var(--fg); font-weight: 500; }
+  .nav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    color: var(--fg);
+    padding: 6px 12px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    line-height: 1.5;
+  }
+  .btn:hover { border-color: var(--fg); }
+  .btn-primary { background: #000; color: #fff; border-color: #000; }
+  .btn-primary:hover { background: #222; border-color: #222; }
+  .btn-sm { padding: 4px 10px; font-size: 13px; }
+  .btn svg { width: 14px; height: 14px; }
+
+  /* Container */
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
+
+  .page-head { margin-bottom: 32px; }
+  .page-head h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
+  .page-head p { color: var(--fg-3); margin-top: 6px; font-size: 15px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 32px; overflow: hidden; }
+  .stat { padding: 20px; border-right: 1px solid var(--border); background: var(--bg); }
+  .stat:last-child { border-right: none; }
+  .stat-label { font-size: 13px; color: var(--fg-3); }
+  .stat-value { font-size: 28px; font-weight: 700; margin-top: 4px; letter-spacing: -0.02em; font-family: "Geist Mono", monospace; }
+  .stat-delta { font-size: 12px; color: var(--success); margin-top: 2px; }
+
+  /* Card / sections */
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .card-head { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .card-head h2 { font-size: 16px; font-weight: 600; }
+  .card-head p { color: var(--fg-3); font-size: 13px; margin-top: 4px; }
+  .card-body { padding: 24px; }
+
+  /* Upload */
+  .upload {
+    border: 1px dashed var(--border-2);
+    border-radius: 8px;
+    padding: 56px 24px;
+    text-align: center;
+    background: var(--bg-2);
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .upload:hover { border-color: var(--fg); background: var(--bg-3); }
+  .upload-icon { width: 48px; height: 48px; margin: 0 auto 16px; border: 1px solid var(--border-2); border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+  .upload h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .upload p { color: var(--fg-3); font-size: 13px; }
+  .upload kbd { font-family: "Geist Mono", monospace; background: var(--bg); border: 1px solid var(--border-2); padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+
+  /* Options */
+  .options { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  .chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--fg-2);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { border-color: var(--fg-3); }
+  .chip.active { background: #000; color: #fff; border-color: #000; }
+
+  /* Link output */
+  .output-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-top: 24px; }
+  .output-tab {
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--fg-3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .output-tab.active { color: var(--fg); border-bottom-color: var(--fg); font-weight: 500; }
+  .output-box {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    font-family: "Geist Mono", monospace;
+    font-size: 12.5px;
+    color: var(--fg-2);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .output-box code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Gallery */
+  .gallery-head { display: flex; align-items: center; justify-content: space-between; margin: 40px 0 16px; }
+  .gallery-head h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .filter-bar { display: flex; gap: 8px; align-items: center; }
+  .search {
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    width: 240px;
+    font-family: inherit;
+  }
+  .search:focus { outline: none; border-color: var(--fg); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .tile {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tile:hover { border-color: var(--fg); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .tile .img { aspect-ratio: 1; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+  .tile .meta {
+    padding: 10px 12px;
+    display: flex; justify-content: space-between;
+    font-size: 12px;
+  }
+  .tile .name { font-family: "Geist Mono", monospace; color: var(--fg); }
+  .tile .size { color: var(--fg-3); }
+  .tile.selected { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.08); }
+
+  /* Table-ish density row */
+  .row { display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .row:last-child { border: none; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">
+    <div class="logo-mark"></div>
+    <span>PicHub</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active">上传</a>
+    <a href="#">图库</a>
+    <a href="#">相册</a>
+    <a href="#">API</a>
+    <a href="#">设置</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-sm">文档</button>
+    <button class="btn btn-sm btn-primary">登录</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="page-head">
+    <h1>上传图片</h1>
+    <p>拖拽、粘贴或选择文件。支持 JPG / PNG / WebP / GIF，单张最大 20MB</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Total Images</div><div class="stat-value">1,284</div><div class="stat-delta">↑ +24 today</div></div>
+    <div class="stat"><div class="stat-label">Storage Used</div><div class="stat-value">4.2<span style="font-size:14px;color:var(--fg-3)"> GB</span></div><div class="stat-delta">42% of quota</div></div>
+    <div class="stat"><div class="stat-label">Bandwidth</div><div class="stat-value">128<span style="font-size:14px;color:var(--fg-3)"> MB</span></div><div class="stat-delta">↑ +8.3%</div></div>
+    <div class="stat"><div class="stat-label">Views</div><div class="stat-value">9,421</div><div class="stat-delta">↑ +312 today</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>上传</h2>
+      <p>Drag & drop, paste with <kbd>⌘V</kbd>, or click to select</p>
+    </div>
+    <div class="card-body">
+      <div class="upload">
+        <div class="upload-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        </div>
+        <h3>Drop files here</h3>
+        <p>or <span style="color:var(--fg);font-weight:500;text-decoration:underline">browse</span> · paste with <kbd>⌘</kbd>+<kbd>V</kbd></p>
+      </div>
+
+      <div class="options">
+        <div class="chip active">✓ 自动压缩</div>
+        <div class="chip">水印</div>
+        <div class="chip active">✓ 缩略图</div>
+        <div class="chip">鉴黄</div>
+        <div class="chip">WebP</div>
+        <div class="chip">+ 相册</div>
+      </div>
+
+      <div class="output-tabs">
+        <div class="output-tab active">URL</div>
+        <div class="output-tab">Markdown</div>
+        <div class="output-tab">HTML</div>
+        <div class="output-tab">BBCode</div>
+        <div class="output-tab">Thumbnail</div>
+      </div>
+      <div class="output-box">
+        <code>https://pic.levis.dev/i/2026/04/15/a3f2e1.webp</code>
+        <button class="btn btn-sm">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery-head">
+    <div>
+      <h2>最近上传</h2>
+      <p style="color:var(--fg-3);font-size:13px;margin-top:2px">Last 30 days · 84 items</p>
+    </div>
+    <div class="filter-bar">
+      <input class="search" placeholder="Search files, tags…" />
+      <button class="btn btn-sm">Sort</button>
+      <button class="btn btn-sm">Filter</button>
+      <button class="btn btn-sm btn-primary">+ Upload</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="tile selected" style="--c1:#000;--c2:#333"><div class="img"></div><div class="meta"><span class="name">a3f2e1.webp</span><span class="size">248KB</span></div></div>
+    <div class="tile" style="--c1:#F97316;--c2:#EF4444"><div class="img"></div><div class="meta"><span class="name">sunset.jpg</span><span class="size">1.2MB</span></div></div>
+    <div class="tile" style="--c1:#10B981;--c2:#059669"><div class="img"></div><div class="meta"><span class="name">forest.png</span><span class="size">892KB</span></div></div>
+    <div class="tile" style="--c1:#06B6D4;--c2:#3B82F6"><div class="img"></div><div class="meta"><span class="name">ocean.webp</span><span class="size">456KB</span></div></div>
+    <div class="tile" style="--c1:#EC4899;--c2:#8B5CF6"><div class="img"></div><div class="meta"><span class="name">neon.gif</span><span class="size">3.4MB</span></div></div>
+    <div class="tile" style="--c1:#FBBF24;--c2:#F59E0B"><div class="img"></div><div class="meta"><span class="name">gold.jpg</span><span class="size">680KB</span></div></div>
+    <div class="tile" style="--c1:#64748B;--c2:#334155"><div class="img"></div><div class="meta"><span class="name">mono.png</span><span class="size">124KB</span></div></div>
+    <div class="tile" style="--c1:#A78BFA;--c2:#6366F1"><div class="img"></div><div class="meta"><span class="name">purple.webp</span><span class="size">312KB</span></div></div>
+  </div>
+</div>
+</body>
+</html>

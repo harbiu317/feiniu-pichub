@@ -1,0 +1,28 @@
+#!/bin/bash
+# 安装回调：接收 wizard/install 表单结果（作为环境变量），写入运行时配置
+set -e
+
+# 确保二进制可执行
+chmod +x "${TRIM_APPDEST}/bin/pichub" 2>/dev/null || true
+mkdir -p "${TRIM_PKGVAR}/uploads"
+mkdir -p "${TRIM_PKGETC}"
+
+# 复制默认配置文件
+if [ ! -f "${TRIM_PKGETC}/config.yaml" ] && [ -f "${TRIM_APPDEST}/config.default.yaml" ]; then
+    cp "${TRIM_APPDEST}/config.default.yaml" "${TRIM_PKGETC}/config.yaml"
+fi
+
+# 将 wizard 表单值写入 env 文件，供 main 启动时注入
+ENV_FILE="${TRIM_PKGETC}/pichub.env"
+{
+    echo "# 由安装向导生成，请勿手动编辑"
+    echo "PICHUB_ADMIN_USER='${wizard_admin_username:-admin}'"
+    echo "PICHUB_ADMIN_PASSWORD='${wizard_admin_password:-}'"
+    echo "PICHUB_ALLOW_ANON=false"
+    if [ -n "${wizard_max_size_mb}" ]; then
+        echo "PICHUB_MAX_SIZE_MB=${wizard_max_size_mb}"
+    fi
+} > "${ENV_FILE}"
+chmod 600 "${ENV_FILE}"
+
+exit 0

@@ -1,0 +1,65 @@
+[
+  {
+    "stepTitle": "欢迎使用 PicHub 图床",
+    "items": [
+      {
+        "type": "tips",
+        "helpText": "PicHub 是一个自托管的图床应用，支持拖拽/粘贴上传、多格式分享链接、相册管理、API 令牌等功能。默认监听端口 7800，首次启动会自动创建以下设置的管理员账户。"
+      }
+    ]
+  },
+  {
+    "stepTitle": "创建管理员账户",
+    "items": [
+      {
+        "type": "text",
+        "field": "wizard_admin_username",
+        "label": "管理员用户名",
+        "placeholder": "admin",
+        "default": "admin",
+        "rules": [
+          { "required": true, "message": "请输入用户名" },
+          { "min": 2, "message": "用户名至少 2 位" },
+          { "max": 32, "message": "用户名最多 32 位" }
+        ]
+      },
+      {
+        "type": "password",
+        "field": "wizard_admin_password",
+        "label": "管理员密码",
+        "placeholder": "至少 8 位",
+        "rules": [
+          { "required": true, "message": "请设置密码" },
+          { "min": 8, "message": "密码至少 8 位" }
+        ]
+      },
+      {
+        "type": "password",
+        "field": "wizard_admin_password_confirm",
+        "label": "确认密码",
+        "placeholder": "再次输入密码",
+        "rules": [
+          { "required": true, "message": "请确认密码" }
+        ]
+      }
+    ]
+  },
+  {
+    "stepTitle": "上传设置",
+    "items": [
+      {
+        "type": "select",
+        "field": "wizard_max_size_mb",
+        "label": "单文件大小上限",
+        "default": "20",
+        "options": [
+          { "label": "5 MB", "value": "5" },
+          { "label": "10 MB", "value": "10" },
+          { "label": "20 MB", "value": "20" },
+          { "label": "50 MB", "value": "50" },
+          { "label": "100 MB", "value": "100" }
+        ]
+      }
+    ]
+  }
+]

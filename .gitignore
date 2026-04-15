@@ -1,0 +1,23 @@
+# binaries
+backend/pichub
+backend/pichub.exe
+levis.pichub/app/bin/
+levis.pichub.fpk
+
+# data
+backend/data/
+data/
+
+# deps & build
+node_modules/
+frontend/dist/
+backend/internal/server/assets/assets/
+
+# dev
+config.dev.yaml
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+backend/bin/

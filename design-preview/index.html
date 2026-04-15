@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>图床设计风格对比</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0a0a0a;
+    color: #e5e5e5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 960px; width: 100%; }
+  h1 { font-size: 32px; margin-bottom: 8px; font-weight: 600; }
+  .sub { color: #888; margin-bottom: 40px; font-size: 15px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.2s ease;
+  }
+  .card:hover { border-color: #444; transform: translateY(-2px); }
+  .swatch { display: flex; gap: 6px; margin-bottom: 16px; }
+  .swatch span { width: 24px; height: 24px; border-radius: 6px; }
+  .card h2 { font-size: 20px; margin-bottom: 6px; }
+  .card p { color: #888; font-size: 14px; line-height: 1.5; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>图床设计风格对比</h1>
+  <p class="sub">点击任一卡片查看完整原型（上传页 + 图库管理页）</p>
+  <div class="grid">
+    <a href="linear.html" class="card">
+      <div class="swatch">
+        <span style="background:#08090A;border:1px solid #333"></span>
+        <span style="background:#5E6AD2"></span>
+        <span style="background:#F7F8F8"></span>
+      </div>
+      <h2>Linear</h2>
+      <p>深色极简，紫色点缀，开发者工具风，信息密度高</p>
+      <span class="tag" style="background:#1a1a2e;color:#9ba3f5">深色主题</span>
+    </a>
+    <a href="vercel.html" class="card">
+      <div class="swatch">
+        <span style="background:#fff"></span>
+        <span style="background:#000"></span>
+        <span style="background:#666"></span>
+      </div>
+      <h2>Vercel</h2>
+      <p>黑白极致，锐利几何，Geist 字体，技术感与性能感</p>
+      <span class="tag" style="background:#fff;color:#000">浅色主题</span>
+    </a>
+    <a href="claude.html" class="card">
+      <div class="swatch">
+        <span style="background:#F5F0E8"></span>
+        <span style="background:#C15F3C"></span>
+        <span style="background:#2D2D2A"></span>
+      </div>
+      <h2>Claude</h2>
+      <p>暖米底色，赤陶强调，编辑器版式，亲和温和</p>
+      <span class="tag" style="background:#F5F0E8;color:#C15F3C">暖色主题</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>

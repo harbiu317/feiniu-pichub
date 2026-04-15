@@ -1,0 +1,11 @@
+{
+    ".url": {
+        "levis.pichub.Application": {
+            "title": "图床 PicHub",
+            "icon": "images/icon_{0}.png",
+            "type": "url",
+            "protocol": "http",
+            "port": "7800"
+        }
+    }
+}

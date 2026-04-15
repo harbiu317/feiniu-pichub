@@ -1,0 +1,86 @@
+#!/bin/bash
+# PicHub 主启动脚本
+
+LOG_FILE="${TRIM_PKGVAR}/info.log"
+PID_FILE="${TRIM_PKGVAR}/app.pid"
+CONFIG_FILE="${TRIM_PKGETC}/config.yaml"
+ENV_FILE="${TRIM_PKGETC}/pichub.env"
+
+BIN="${TRIM_APPDEST}/bin/pichub"
+
+if [ ! -f "${CONFIG_FILE}" ] && [ -f "${TRIM_APPDEST}/config.default.yaml" ]; then
+    mkdir -p "${TRIM_PKGETC}"
+    cp "${TRIM_APPDEST}/config.default.yaml" "${CONFIG_FILE}"
+fi
+
+# 载入安装向导生成的变量（管理员账号/密码等）
+if [ -f "${ENV_FILE}" ]; then
+    set -a
+    . "${ENV_FILE}"
+    set +a
+fi
+
+export PICHUB_ADDR="0.0.0.0:7800"
+export PICHUB_DATA_DIR="${TRIM_PKGVAR}"
+export PICHUB_PUBLIC_URL="http://localhost:7800"
+
+log_msg() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "${LOG_FILE}"
+}
+
+check_process() {
+    kill -0 "$1" 2>/dev/null
+}
+
+status() {
+    if [ -f "${PID_FILE}" ]; then
+        pid=$(head -n 1 "${PID_FILE}" | tr -d '[:space:]')
+        if check_process "${pid}"; then return 0; fi
+        rm -f "${PID_FILE}"
+    fi
+    return 1
+}
+
+start_process() {
+    if status; then
+        log_msg "Already running, pid=$(cat ${PID_FILE})"
+        return 0
+    fi
+    log_msg "Starting PicHub ..."
+    chmod +x "${BIN}" 2>/dev/null || true
+    "${BIN}" -config "${CONFIG_FILE}" >> "${LOG_FILE}" 2>&1 &
+    printf "%s" "$!" > "${PID_FILE}"
+    log_msg "Started pid=$(cat ${PID_FILE})"
+    # 管理员账号首次创建后立刻清理密码，避免每次重启都尝试写回
+    if [ -f "${ENV_FILE}" ] && grep -q "PICHUB_ADMIN_PASSWORD='.\\+'" "${ENV_FILE}"; then
+        sleep 2
+        sed -i "s/^PICHUB_ADMIN_PASSWORD=.*/PICHUB_ADMIN_PASSWORD=''/" "${ENV_FILE}"
+    fi
+    return 0
+}
+
+stop_process() {
+    log_msg "Stopping PicHub ..."
+    if [ -r "${PID_FILE}" ]; then
+        pid=$(head -n 1 "${PID_FILE}" | tr -d '[:space:]')
+        if check_process "${pid}"; then
+            kill -TERM "${pid}" >> "${LOG_FILE}" 2>&1
+            local count=0
+            while check_process "${pid}" && [ $count -lt 10 ]; do
+                sleep 1; count=$((count + 1))
+            done
+            if check_process "${pid}"; then
+                kill -KILL "${pid}"; sleep 1
+            fi
+        fi
+        rm -f "${PID_FILE}"
+    fi
+    return 0
+}
+
+case $1 in
+start)  start_process ;;
+stop)   stop_process ;;
+status) status && exit 0 || exit 3 ;;
+*)      exit 1 ;;
+esac

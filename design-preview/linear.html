@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>图床 · Linear 风格</title>
+<style>
+  :root {
+    --bg: #08090A;
+    --bg-2: #0E0F11;
+    --bg-3: #131417;
+    --border: #1F2023;
+    --border-2: #2A2B30;
+    --fg: #F7F8F8;
+    --fg-2: #B4B4B4;
+    --fg-3: #8A8F98;
+    --accent: #5E6AD2;
+    --accent-hover: #6E7AE0;
+    --success: #4CB782;
+    --danger: #EB5757;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Sidebar */
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  .sidebar {
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; margin-bottom: 16px;
+    font-weight: 600; font-size: 14px;
+  }
+  .logo-dot { width: 20px; height: 20px; border-radius: 6px; background: linear-gradient(135deg, #5E6AD2, #8B5CF6); }
+  .nav-section { font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 10px 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 10px; border-radius: 6px;
+    color: var(--fg-2); font-size: 13px;
+    cursor: pointer;
+  }
+  .nav-item:hover { background: var(--bg-3); color: var(--fg); }
+  .nav-item.active { background: var(--bg-3); color: var(--fg); }
+  .nav-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+  .badge { margin-left: auto; background: var(--border-2); color: var(--fg-2); font-size: 11px; padding: 1px 6px; border-radius: 4px; }
+
+  /* Main */
+  .main { padding: 0; overflow: hidden; }
+  .topbar {
+    height: 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .topbar h1 { font-size: 14px; font-weight: 500; }
+  .breadcrumb { color: var(--fg-3); }
+  .topbar .actions { margin-left: auto; display: flex; gap: 8px; }
+
+  .btn {
+    background: var(--bg-3);
+    border: 1px solid var(--border-2);
+    color: var(--fg);
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--border); border-color: var(--fg-3); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn svg { width: 14px; height: 14px; }
+
+  .section { padding: 24px; }
+  .section-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .section-sub { color: var(--fg-3); margin-bottom: 20px; }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 1px dashed var(--border-2);
+    border-radius: 10px;
+    padding: 48px 24px;
+    text-align: center;
+    background: var(--bg-2);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(94, 106, 210, 0.05); }
+  .upload-icon { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--fg-3); }
+  .upload-zone h3 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .upload-zone p { color: var(--fg-3); font-size: 13px; }
+  .upload-zone kbd { background: var(--bg-3); border: 1px solid var(--border-2); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+  /* Quick options */
+  .options-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .chip {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 12px; color: var(--fg-2);
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .chip:hover { border-color: var(--border-2); color: var(--fg); }
+  .chip.active { background: rgba(94, 106, 210, 0.15); border-color: var(--accent); color: #C1C7F5; }
+
+  /* Link format card */
+  .links-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+  .links-tabs { display: flex; gap: 2px; margin-bottom: 12px; }
+  .link-tab {
+    padding: 4px 10px; border-radius: 5px;
+    font-size: 12px; color: var(--fg-3);
+    cursor: pointer;
+  }
+  .link-tab.active { background: var(--bg-3); color: var(--fg); }
+  .link-input {
+    display: flex; gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--fg-2);
+  }
+  .link-input code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Gallery */
+  .gallery-header { display: flex; align-items: center; justify-content: space-between; margin: 32px 0 16px; }
+  .filter-bar { display: flex; gap: 6px; }
+  .search {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--fg);
+    font-size: 13px;
+    width: 200px;
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .tile {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tile:hover { border-color: var(--border-2); }
+  .tile .img {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+  }
+  .tile .meta {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 8px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    font-size: 11px;
+    color: var(--fg-2);
+    display: flex; justify-content: space-between;
+  }
+  .tile .pick {
+    position: absolute; top: 8px; left: 8px;
+    width: 18px; height: 18px; border-radius: 4px;
+    background: rgba(0,0,0,0.5); border: 1px solid var(--border-2);
+    opacity: 0;
+  }
+  .tile:hover .pick, .tile.selected .pick { opacity: 1; }
+  .tile.selected { border-color: var(--accent); }
+  .tile.selected .pick { background: var(--accent); border-color: var(--accent); }
+
+  /* Stats row */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat-label { font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-value { font-size: 22px; font-weight: 600; margin-top: 4px; }
+  .stat-delta { font-size: 11px; color: var(--success); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span>图床 · PicHub</span>
+    </div>
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>上传</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>图库<span class="badge">1,284</span></div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>相册<span class="badge">8</span></div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4"/></svg>API 令牌</div>
+    <div class="nav-section">Admin</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>用户管理</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>存储配置</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>内容审核</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="breadcrumb">Workspace</span>
+      <span class="breadcrumb">/</span>
+      <h1>上传图片</h1>
+      <div class="actions">
+        <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>新相册</button>
+        <button class="btn btn-primary">邀请成员</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="stats">
+        <div class="stat"><div class="stat-label">总图片</div><div class="stat-value">1,284</div><div class="stat-delta">+24 今日</div></div>
+        <div class="stat"><div class="stat-label">已用空间</div><div class="stat-value">4.2 GB</div><div class="stat-delta">42% 配额</div></div>
+        <div class="stat"><div class="stat-label">今日流量</div><div class="stat-value">128 MB</div><div class="stat-delta">+8.3%</div></div>
+        <div class="stat"><div class="stat-label">访问次数</div><div class="stat-value">9,421</div><div class="stat-delta">+312 今日</div></div>
+      </div>
+
+      <h2 class="section-title">上传图片</h2>
+      <p class="section-sub">拖拽、粘贴或点击上传。支持 JPG / PNG / WebP / GIF，最大 20MB</p>
+
+      <div class="upload-zone">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <h3>拖拽图片到此处，或点击选择</h3>
+        <p>支持 <kbd>Ctrl</kbd> + <kbd>V</kbd> 粘贴上传 · 可同时选择多张</p>
+      </div>
+
+      <div class="options-row">
+        <div class="chip active">✓ 自动压缩</div>
+        <div class="chip">添加水印</div>
+        <div class="chip active">✓ 生成缩略图</div>
+        <div class="chip">鉴黄检测</div>
+        <div class="chip">转 WebP</div>
+        <div class="chip">+ 选择相册</div>
+      </div>
+
+      <div class="links-card">
+        <div class="links-tabs">
+          <div class="link-tab active">URL</div>
+          <div class="link-tab">Markdown</div>
+          <div class="link-tab">HTML</div>
+          <div class="link-tab">BBCode</div>
+          <div class="link-tab">缩略图</div>
+        </div>
+        <div class="link-input">
+          <code>https://pic.levis.dev/i/2026/04/15/a3f2e1.webp</code>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+      </div>
+
+      <div class="gallery-header">
+        <div>
+          <h2 class="section-title">最近上传</h2>
+          <p class="section-sub">最近 30 天 · 共 84 张</p>
+        </div>
+        <div class="filter-bar">
+          <input class="search" placeholder="搜索文件名或标签..." />
+          <button class="btn">排序</button>
+          <button class="btn">筛选</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="tile selected" style="--c1:#5E6AD2;--c2:#8B5CF6"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>a3f2e1.webp</span><span>248 KB</span></div></div>
+        <div class="tile" style="--c1:#F97316;--c2:#EF4444"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>sunset.jpg</span><span>1.2 MB</span></div></div>
+        <div class="tile" style="--c1:#10B981;--c2:#059669"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>forest.png</span><span>892 KB</span></div></div>
+        <div class="tile" style="--c1:#06B6D4;--c2:#3B82F6"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>ocean.webp</span><span>456 KB</span></div></div>
+        <div class="tile" style="--c1:#EC4899;--c2:#8B5CF6"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>neon.gif</span><span>3.4 MB</span></div></div>
+        <div class="tile" style="--c1:#FBBF24;--c2:#F59E0B"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>gold.jpg</span><span>680 KB</span></div></div>
+        <div class="tile" style="--c1:#64748B;--c2:#334155"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>mono.png</span><span>124 KB</span></div></div>
+        <div class="tile" style="--c1:#A78BFA;--c2:#6366F1"><div class="img"></div><div class="pick">✓</div><div class="meta"><span>purple.webp</span><span>312 KB</span></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

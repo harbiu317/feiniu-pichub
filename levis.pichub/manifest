@@ -1,0 +1,10 @@
+appname=levis.pichub
+version=1.0.13
+desc=Self-hosted image hosting with multi-format share links, albums, API tokens
+arch=x86_64
+display_name=图床 PicHub
+maintainer=levis
+distributor=levis
+desktop_uidir=ui
+desktop_applaunchname=levis.pichub.Application
+source=thirdparty

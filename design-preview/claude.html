@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>图床 · Claude 风格</title>
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --bg-2: #EFE8DC;
+    --bg-3: #FAF6EF;
+    --surface: #FFFFFF;
+    --border: #E0D6C3;
+    --border-2: #C7B89D;
+    --fg: #2D2D2A;
+    --fg-2: #4A4A44;
+    --fg-3: #7A7468;
+    --accent: #C15F3C;
+    --accent-hover: #A84F2D;
+    --accent-soft: #E8D4C8;
+    --success: #5C7A3E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Inter", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Georgia", "Noto Serif SC", "Source Han Serif SC", serif; letter-spacing: -0.01em; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Top nav */
+  header.nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 68px;
+    display: flex; align-items: center;
+    background: var(--bg);
+  }
+  .logo { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 18px; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: Georgia, serif; font-style: italic; font-size: 18px;
+  }
+  .nav-links { display: flex; gap: 28px; margin-left: 40px; }
+  .nav-links a { font-size: 15px; color: var(--fg-3); font-weight: 500; }
+  .nav-links a.active { color: var(--fg); }
+  .nav-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 8px 16px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; border-radius: 10px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn:hover { border-color: var(--border-2); background: var(--bg-3); }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-sm { padding: 5px 12px; font-size: 13px; }
+
+  /* Container */
+  .container { max-width: 1120px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  .hero { margin-bottom: 48px; }
+  .hero .eyebrow { font-size: 13px; color: var(--accent); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  .hero h1 { font-size: 48px; font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .hero p { color: var(--fg-3); font-size: 17px; max-width: 620px; line-height: 1.6; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px; }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+  }
+  .stat-label { font-size: 13px; color: var(--fg-3); }
+  .stat-value { font-size: 30px; font-weight: 500; margin-top: 6px; letter-spacing: -0.02em; }
+  .stat-delta { font-size: 12px; color: var(--success); margin-top: 4px; }
+
+  /* Upload zone */
+  .upload-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px;
+    margin-bottom: 32px;
+  }
+  .upload {
+    border: 2px dashed var(--border-2);
+    border-radius: 14px;
+    padding: 64px 32px;
+    text-align: center;
+    background: var(--bg-3);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .upload:hover { border-color: var(--accent); background: #FFF9F2; }
+  .upload-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--accent);
+  }
+  .upload h3 { font-family: Georgia, "Noto Serif SC", serif; font-size: 22px; font-weight: 500; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .upload p { color: var(--fg-3); font-size: 14px; }
+  .upload kbd { background: var(--surface); border: 1px solid var(--border); padding: 2px 7px; border-radius: 5px; font-size: 12px; font-family: "SF Mono", monospace; }
+
+  /* Options */
+  .upload-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .options { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--fg-2);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { background: var(--bg-2); border-color: var(--border-2); }
+  .chip.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+  /* Link output */
+  .link-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+  .link-card h4 { font-family: Georgia, serif; font-size: 16px; font-weight: 500; margin-bottom: 12px; }
+  .link-tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+  .link-tab {
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 13px; color: var(--fg-3);
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .link-tab.active { background: var(--fg); color: var(--bg); }
+  .link-input {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    color: var(--fg-2);
+  }
+  .link-input code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Gallery */
+  .gallery-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; }
+  .gallery-head h2 { font-family: Georgia, "Noto Serif SC", serif; font-size: 32px; font-weight: 500; letter-spacing: -0.02em; }
+  .gallery-head p { color: var(--fg-3); font-size: 14px; margin-top: 4px; }
+  .filter-bar { display: flex; gap: 8px; align-items: center; }
+  .search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: 14px;
+    width: 260px;
+    font-family: inherit;
+    color: var(--fg);
+  }
+  .search:focus { outline: none; border-color: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45, 45, 42, 0.08); border-color: var(--border-2); }
+  .tile .img { aspect-ratio: 1; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+  .tile .meta { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .tile .name { font-size: 13px; color: var(--fg); font-family: "SF Mono", monospace; }
+  .tile .size { font-size: 12px; color: var(--fg-3); }
+  .tile.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  /* Divider accent */
+  .divider { display: flex; align-items: center; gap: 16px; margin: 56px 0 24px; color: var(--fg-3); font-size: 13px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="logo">
+    <div class="logo-mark">P</div>
+    <span>PicHub</span>
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active">上传</a>
+    <a href="#">图库</a>
+    <a href="#">相册</a>
+    <a href="#">API</a>
+    <a href="#">设置</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-sm">文档</button>
+    <button class="btn btn-sm btn-primary">登录</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <div class="eyebrow">Image Hosting · 图床</div>
+    <h1 class="serif">安心存放<br/>你的每一张图片</h1>
+    <p>简洁可靠的自托管图床。拖拽上传、多格式分享链接、相册管理、API 令牌——一切你需要的，都在这里。</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">总图片</div><div class="stat-value">1,284</div><div class="stat-delta">↑ 今日新增 24</div></div>
+    <div class="stat"><div class="stat-label">已用空间</div><div class="stat-value">4.2 GB</div><div class="stat-delta">配额 42%</div></div>
+    <div class="stat"><div class="stat-label">今日流量</div><div class="stat-value">128 MB</div><div class="stat-delta">↑ +8.3%</div></div>
+    <div class="stat"><div class="stat-label">访问次数</div><div class="stat-value">9,421</div><div class="stat-delta">↑ +312 今日</div></div>
+  </div>
+
+  <div class="upload-card">
+    <div class="upload">
+      <div class="upload-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+      </div>
+      <h3>把图片拖到这里</h3>
+      <p>或点击选择文件 · 支持 <kbd>Ctrl</kbd> + <kbd>V</kbd> 粘贴 · 单张最大 20MB</p>
+    </div>
+    <div class="upload-footer">
+      <div class="options">
+        <div class="chip active">✓ 自动压缩</div>
+        <div class="chip">添加水印</div>
+        <div class="chip active">✓ 生成缩略图</div>
+        <div class="chip">鉴黄检测</div>
+        <div class="chip">转 WebP</div>
+        <div class="chip">+ 选择相册</div>
+      </div>
+      <button class="btn btn-primary">选择文件</button>
+    </div>
+  </div>
+
+  <div class="link-card">
+    <h4>分享链接</h4>
+    <div class="link-tabs">
+      <div class="link-tab active">URL</div>
+      <div class="link-tab">Markdown</div>
+      <div class="link-tab">HTML</div>
+      <div class="link-tab">BBCode</div>
+      <div class="link-tab">缩略图</div>
+    </div>
+    <div class="link-input">
+      <code>https://pic.levis.dev/i/2026/04/15/a3f2e1.webp</code>
+      <button class="btn btn-sm">复制</button>
+    </div>
+  </div>
+
+  <div class="divider">图库</div>
+
+  <div class="gallery-head">
+    <div>
+      <h2>最近上传</h2>
+      <p>最近 30 天 · 共 84 张</p>
+    </div>
+    <div class="filter-bar">
+      <input class="search" placeholder="搜索文件名或标签..." />
+      <button class="btn btn-sm">排序</button>
+      <button class="btn btn-sm">筛选</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="tile selected" style="--c1:#C15F3C;--c2:#E8824A"><div class="img"></div><div class="meta"><span class="name">a3f2e1.webp</span><span class="size">248 KB</span></div></div>
+    <div class="tile" style="--c1:#F97316;--c2:#EF4444"><div class="img"></div><div class="meta"><span class="name">sunset.jpg</span><span class="size">1.2 MB</span></div></div>
+    <div class="tile" style="--c1:#5C7A3E;--c2:#8BA85A"><div class="img"></div><div class="meta"><span class="name">forest.png</span><span class="size">892 KB</span></div></div>
+    <div class="tile" style="--c1:#4A7A8C;--c2:#6B9DAE"><div class="img"></div><div class="meta"><span class="name">ocean.webp</span><span class="size">456 KB</span></div></div>
+    <div class="tile" style="--c1:#A84F8C;--c2:#C17BA8"><div class="img"></div><div class="meta"><span class="name">neon.gif</span><span class="size">3.4 MB</span></div></div>
+    <div class="tile" style="--c1:#C9A650;--c2:#E0C470"><div class="img"></div><div class="meta"><span class="name">gold.jpg</span><span class="size">680 KB</span></div></div>
+    <div class="tile" style="--c1:#6B645A;--c2:#4A4A44"><div class="img"></div><div class="meta"><span class="name">mono.png</span><span class="size">124 KB</span></div></div>
+    <div class="tile" style="--c1:#8C5A9D;--c2:#6B4A85"><div class="img"></div><div class="meta"><span class="name">purple.webp</span><span class="size">312 KB</span></div></div>
+  </div>
+</div>
+</body>
+</html>

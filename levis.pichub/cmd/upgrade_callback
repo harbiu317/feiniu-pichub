@@ -1,0 +1,3 @@
+#!/bin/bash
+chmod +x "${TRIM_APPDEST}/bin/pichub" 2>/dev/null || true
+exit 0

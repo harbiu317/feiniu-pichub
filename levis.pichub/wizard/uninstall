@@ -1,0 +1,24 @@
+[
+  {
+    "stepTitle": "卸载 PicHub",
+    "items": [
+      {
+        "type": "tips",
+        "helpText": "卸载将停止 PicHub 服务并移除应用程序。请选择如何处理已上传的图片、相册、用户账户等数据。此操作不可撤销。"
+      },
+      {
+        "type": "radio",
+        "field": "wizard_uninstall_keep_data",
+        "label": "数据处理方式",
+        "default": "keep",
+        "options": [
+          { "label": "保留数据（重新安装后可恢复所有图片和账户）", "value": "keep" },
+          { "label": "彻底删除数据（图片、数据库、配置将全部清除）", "value": "delete" }
+        ],
+        "rules": [
+          { "required": true, "message": "请选择数据处理方式" }
+        ]
+      }
+    ]
+  }
+]
