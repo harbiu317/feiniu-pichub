@@ -20,30 +20,12 @@ const previewIndex = ref(0)
 const isSelectMode = ref(false)
 const isLoadingMore = ref(false)
 
-// 使用懒加载图片
-const observer = ref<IntersectionObserver | null>(null)
-const imageRefs = ref<Map<number, HTMLImageElement>>(new Map())
 
 onMounted(async () => {
   await load()
-  try { 
-    albums.value = await api.listAlbums() 
+  try {
+    albums.value = await api.listAlbums()
   } catch {}
-  
-  // 初始化 IntersectionObserver 用于图片懒加载
-  observer.value = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target as HTMLImageElement
-        if (img.dataset.src) {
-          img.src = img.dataset.src
-          observer.value?.unobserve(img)
-        }
-      }
-    })
-  }, {
-    rootMargin: '50px'
-  })
 })
 
 watch([keyword, filterAlbum, page], () => {
@@ -200,7 +182,6 @@ onMounted(() => {
 import { onUnmounted } from 'vue'
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
-  observer.value?.disconnect()
 })
 </script>
 
@@ -280,8 +261,8 @@ onUnmounted(() => {
       :class="{ selected: selected.has(item.id) }"
       @click="previewImage(item, index)"
     >
-      <img 
-        :data-src="item.thumb" 
+      <img
+        :src="item.thumb"
         :alt="item.filename"
         loading="lazy"
       />

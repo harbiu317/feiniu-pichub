@@ -4,14 +4,15 @@ server:
   public_url: "http://localhost:5173"
   allow_anonymous: true
 database:
-  path: "backend/data/pichub.db"
+  path: "data/pichub.db"
 storage:
   driver: "local"
   local:
-    root: "backend/data/uploads"
+    root: "data/uploads"
 auth:
-  admin_user: "admin"
-  admin_password: "admin123"
+  # 留空 = 首次访问会强制走 /setup 向导创建管理员
+  admin_user: ""
+  admin_password: ""
 image:
   max_size_mb: 20
   auto_compress: true
